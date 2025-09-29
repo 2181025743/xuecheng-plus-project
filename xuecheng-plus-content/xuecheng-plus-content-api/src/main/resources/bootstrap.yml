@@ -1,0 +1,30 @@
+server:
+  servlet:
+    context-path: /content
+  port: 63040
+#微服务配置
+spring:
+  application:
+    name: content-api
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://101.42.238.233:3306/xuecheng?serverTimezone=UTC&userUnicode=true&useSSL=false&
+    username: root
+    password: Hm#2024@MySQL
+
+# MyBatis Plus 配置
+mybatis-plus:
+  mapper-locations: classpath*:/mapper/**/*.xml
+  type-aliases-package: com.xuecheng.content.model.po
+  configuration:
+    map-underscore-to-camel-case: true
+# 日志文件配置路径
+logging:
+  config: classpath:log4j2-dev.xml
+
+swagger:
+  title: "学成在线内容管理系统"
+  description: "内容系统管理系统对课程相关信息进行管理"
+  base-package: com.xuecheng.content
+  enabled: true
+  version: 1.0.0

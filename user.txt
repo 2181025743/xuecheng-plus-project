@@ -1,0 +1,129 @@
+# 用户的完整环境信息汇总
+
+## 一、云服务器信息
+```yaml
+服务器信息:
+公网IP:101.42.238.233和114.132.63.109(已配置宝塔账号sxpf6le3 密码310a8298)
+  内网IP: 10.2.8.13另一个未知
+  SSH端口: 22
+  SSH用户: root
+```
+
+## 二、MySQL信息
+```yaml
+MySQL Docker容器:
+  容器名: mysql
+  镜像: mysql:8.0
+  端口映射: 0.0.0.0:3306 -> 3306
+  数据目录: /root/mysql-data/
+
+MySQL账户密码:
+  root@% : Hm#2024@MySQL  # Windows远程连接使用
+  root@localhost : Hm#2024@MySQL  # 服务器本地连接使用
+
+运行中的服务
+
+MySQL容器:
+  容器名: mysql
+  镜像: mysql:8.0
+  端口: 0.0.0.0:3306->3306
+  root密码: Hm#2024@MySQL
+  数据目录: /root/mysql-data/
+
+Redis容器:
+  容器名: redis-hmdp
+  镜像: redis:7.2-alpine
+  端口: 0.0.0.0:6379->6379
+  密码: Redis@2024hmdp
+  配置文件: /docker/redis/conf/redis.conf
+
+
+Seata容器:
+  容器名: seata-server
+  镜像: seataio/seata-server:1.5.2
+  端口: 7099->7091, 8099->8091
+  控制台账号: admin/admin
+  运行模式: file模式（未注册到Nacos）
+  配置文件: /docker/seata/config/application-minimal.yml
+  内存限制: 256M
+  RabbitMQ(占内存过大暂未运行)：
+用户名 root
+密码 A1472580369Z
+用户名2： hmall
+密码：123
+端口 5672 (AMQP)，15672 (Web 管理端)，25672 (集群内部通信)
+
+
+注意Nacos单独一个在另一个云服务器中（http://114.132.63.109:8848/nacos）:
+  容器名: nacos
+  端口: 8848, 9848-9849
+  账号: nacos/nacos
+  配置文件: /opt/nacos/conf/application.properties
+  数据库: nacos_config
+
+备份信息:
+  备份脚本: /root/mysql_backup.sh
+  备份目录: /root/mysql_backups/
+  定时任务: 每天凌晨2点自动备份
+## 七、备份相关
+```yaml
+MySQL备份:
+  备份脚本: /root/mysql_backup.sh
+  备份目录: /root/mysql_backups/
+  定时任务: 每天凌晨2点自动备份
+  保留时间: 7天
+
+手动备份数据:
+  /root/hmall.sql (36MB)
+  /root/hm-item.sql (36MB)
+```
+
+## 八、安全相关
+```yaml
+已安装的安全工具:
+  - fail2ban (SSH防暴力破解)
+  - 定时备份脚本
+
+
+## 九、常用命令
+```bash
+# MySQL连接
+mysql -h101.42.238.233 -uroot -pHm#2024@MySQL  # Windows上执行
+
+# Redis连接
+docker exec -it redis-hmdp redis-cli -a Redis@2024hmdp
+
+
+# 备份MySQL
+/root/mysql_backup.sh
+
+## 十、注意事项
+2. 已放行所有端口，尽管存在安全风险
+3. 建议定期检查 `/root/mysql_backups/` 确保备份正常
+4. 曾遭受勒索攻击，已删除RECOVER_YOUR_DATA数据库
+
+代码完整性：
+提供完整可执行的代码，禁止使用占位符如"此处放你的某部分代码"
+所有代码必须即拿即用
+
+配置信息处理：
+使用上述真实配置信息填充代码
+MySQL密码使用：Hm#2024@MySQL
+IP地址使用：101.42.238.233（公网）
+其它
+禁止行为： 不得使用示例值如"password:123456（改为你的密码）"
+未知信息处理：
+
+若确实缺少必要配置信息，使用醒目注释标记：
+Java
+
+// ⚠️ 注意：此处需要填写[具体信息名称]，用户环境中未提供
+在代码块外用粗体警告说明缺失的信息
+知识讲解：
+
+对复杂概念、高级特性、不常见方法提供详细解释
+使用注释或独立段落说明原理和用法
+提供相关最佳实践建议
+如果你需要日志排查你给我日志排查代码请加上日志限制代码，例如限制100行，200行，因为我要把日志发给你，看你需求设置限制行数
+如果在代码中有需要我改成仅我知道的密码之类的你不仅要在代码或命令里注释，也要在代码块外说明，因为我一般不看代码或命令直接就复制粘贴了
+以上是我的信息，请作为上下文记忆

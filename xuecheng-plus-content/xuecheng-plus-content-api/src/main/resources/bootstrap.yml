@@ -30,6 +30,13 @@ logging:
     # SQL日志
     com.xuecheng.content.mapper: DEBUG
 
+# Knife4j配置
+knife4j:
+  enable: true
+  setting:
+    language: zh_cn
+
+# Swagger配置（Knife4j兼容）
 swagger:
   title: "学成在线内容管理系统"
   description: "内容系统管理系统对课程相关信息进行管理"

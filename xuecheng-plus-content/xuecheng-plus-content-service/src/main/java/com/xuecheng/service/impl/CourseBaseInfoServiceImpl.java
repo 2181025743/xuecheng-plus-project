@@ -23,18 +23,34 @@ public class CourseBaseInfoServiceImpl implements CourseBaseInfoService {
     CourseBaseMapper courseBaseMapper;
 
     @Override
-    public PageResult<CourseBase> queryCourseBaseList(PageParams pageParams, QueryCourseParamsDto queryCourseParamsDto) {
+    public PageResult<CourseBase> queryCourseBaseList(PageParams pageParams,
+            QueryCourseParamsDto queryCourseParamsDto) {
         // 2. 构建查询条件
         log.info("2. 构建分页查询条件");
         LambdaQueryWrapper<CourseBase> queryWrapper = new LambdaQueryWrapper<>();
+
+        // 课程名称模糊查询
         queryWrapper.like(!StringUtils.isEmpty(queryCourseParamsDto.getCourseName()),
                 CourseBase::getName,
                 queryCourseParamsDto.getCourseName());
+
+        // 课程审核状态精确查询
         queryWrapper.eq(!StringUtils.isEmpty(queryCourseParamsDto.getAuditStatus()),
                 CourseBase::getAuditStatus,
                 queryCourseParamsDto.getAuditStatus());
+
+        // 课程发布状态精确查询
+        queryWrapper.eq(!StringUtils.isEmpty(queryCourseParamsDto.getPublishStatus()),
+                CourseBase::getStatus,
+                queryCourseParamsDto.getPublishStatus());
+
         // 3. 设置分页参数
         log.info("分页参数：第{}页，每页{}条", pageParams.getPageNo(), pageParams.getPageSize());
+        log.info("查询条件：课程名称={}，审核状态={}，发布状态={}",
+                queryCourseParamsDto.getCourseName(),
+                queryCourseParamsDto.getAuditStatus(),
+                queryCourseParamsDto.getPublishStatus());
+
         // 4. 执行分页查询
         log.info("3. 执行分页查询...");
         Page<CourseBase> courseBasePage = new Page<>(pageParams.getPageNo(), pageParams.getPageSize());
@@ -54,7 +70,8 @@ public class CourseBaseInfoServiceImpl implements CourseBaseInfoService {
         log.info("✅ 本页数据：{} 条", items.size());
 
         items.forEach(item -> {
-            log.info("  - 课程ID：{}，课程名称：{}", item.getId(), item.getName());
+            log.info("  - 课程ID：{}，课程名称：{}，审核状态：{}，发布状态：{}",
+                    item.getId(), item.getName(), item.getAuditStatus(), item.getStatus());
         });
 
         log.info("========== 测试完成 ==========\n");

@@ -4,8 +4,8 @@
         <property name="logdir">logs</property>
         <!-- 文件日志格式：详细信息 -->
         <property name="FILE_PATTERN">%date{YYYY-MM-dd HH:mm:ss,SSS} %level [%thread][%file:%line] - %msg%n%throwable</property>
-        <!-- 控制台日志格式：简洁清晰 -->
-        <property name="CONSOLE_PATTERN">%d{HH:mm:ss.SSS} %highlight{%-5level}{ERROR=red, WARN=yellow, INFO=green, DEBUG=cyan} %style{[%t]}{blue} %style{%c{1.}}{cyan} - %msg%n</property>
+        <!-- 控制台日志格式：简洁清晰（Spring Boot风格） -->
+        <property name="CONSOLE_PATTERN">%d{yyyy-MM-dd HH:mm:ss.SSS} %highlight{%-5level}{ERROR=Bright Red, WARN=Bright Yellow, INFO=Bright Green, DEBUG=Bright Cyan, TRACE=Bright White} %style{[%15.15t]}{Bright Blue} %style{%-40.40c{1.}}{Bright Cyan} : %msg%n%throwable</property>
     </properties>
     <Appenders>
         <Console name="Console" target="SYSTEM_OUT">

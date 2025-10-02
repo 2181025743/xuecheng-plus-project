@@ -1,5 +1,7 @@
 package com.xuecheng.content.model.po;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import java.io.Serializable;
 import lombok.Data;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -19,7 +21,10 @@ public class CourseMarket implements Serializable {
 
     /**
      * 主键，课程id
+     * 注意：这个ID不是自增的，而是使用course_base表的ID
+     * 使用INPUT策略，表示手动设置ID值
      */
+    @TableId(value = "id", type = IdType.INPUT)
     private Long id;
 
     /**
@@ -56,6 +61,5 @@ public class CourseMarket implements Serializable {
      * 有效期天数
      */
     private Integer validDays;
-
 
 }

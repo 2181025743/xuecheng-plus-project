@@ -11,6 +11,10 @@ spring:
     url: jdbc:mysql://101.42.238.233:3306/xuecheng?serverTimezone=UTC&userUnicode=true&useSSL=false&
     username: root
     password: Hm#2024@MySQL
+  # 启用ANSI彩色日志输出
+  output:
+    ansi:
+      enabled: ALWAYS
 
 # MyBatis Plus 配置
 mybatis-plus:

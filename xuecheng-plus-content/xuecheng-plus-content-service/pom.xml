@@ -17,6 +17,13 @@
             <artifactId>xuecheng-plus-content-model</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
+        
+        <!-- 引入基础模块，包含异常处理 -->
+        <dependency>
+            <groupId>com.xuecheng</groupId>
+            <artifactId>xuecheng-plus-base</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
 
         <!-- MySQL 驱动 -->
         <dependency>

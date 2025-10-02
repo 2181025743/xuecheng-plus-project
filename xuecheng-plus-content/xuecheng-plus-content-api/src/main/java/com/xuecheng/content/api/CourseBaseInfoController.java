@@ -2,6 +2,8 @@ package com.xuecheng.content.api;
 
 import com.xuecheng.base.model.PageParams;
 import com.xuecheng.base.model.PageResult;
+import com.xuecheng.content.model.dto.AddCourseDto;
+import com.xuecheng.content.model.dto.CourseBaseInfoDto;
 import com.xuecheng.content.model.dto.QueryCourseParamsDto;
 import com.xuecheng.content.model.po.CourseBase;
 import com.xuecheng.service.CourseBaseInfoService;
@@ -36,4 +38,15 @@ public class CourseBaseInfoController {
                 queryCourseParamsDto);
     }
 
+    @ApiOperation("新增课程")
+    @PostMapping
+    public CourseBaseInfoDto createCourse(@RequestBody AddCourseDto addCourseDto) {
+
+        // 机构ID：从登录用户Session中获取（暂时写死测试）
+        // TODO: 集成Spring Security后，从SecurityContextHolder获取
+        Long companyId = 1232141425L; // 暂时写死的机构ID
+
+        // 调用Service层创建课程
+        return courseBaseInfoService.createCourse(companyId, addCourseDto);
+    }
 }

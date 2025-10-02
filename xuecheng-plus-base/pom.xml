@@ -66,10 +66,7 @@
             <artifactId>simplemagic</artifactId>
             <version>1.17</version>
         </dependency>
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-        </dependency>
+        <!-- 删除重复的commons-lang3依赖（第21行已声明） -->
         <dependency>
             <groupId>com.google.zxing</groupId>
             <artifactId>core</artifactId>

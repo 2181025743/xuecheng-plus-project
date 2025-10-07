@@ -1,0 +1,41 @@
+# Node.js依赖（永远不要提交！）
+node_modules/
+package-lock.json
+
+# 编译输出
+target/
+*.class
+*.jar
+*.war
+*.ear
+
+# IDE配置
+.idea/
+*.iml
+.vscode/
+*.swp
+*.swo
+*~
+
+# 日志文件
+logs/
+*.log
+
+# 临时文件
+*.tmp
+*.temp
+.DS_Store
+Thumbs.db
+
+# 敏感配置文件（包含密钥、密码等）
+nacos/
+user.txt
+application-dev.yml
+application-dev.yaml
+*-dev.yml
+*-dev.yaml
+
+# 本地环境配置
+.env
+.env.local
+

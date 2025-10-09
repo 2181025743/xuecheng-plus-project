@@ -257,8 +257,9 @@ export default class extends mixins(MixinTools) {
       //     return v
       //   })
       // }
-      if (data) {
-        data.teachPlanTreeNodes = data.map((v: any) => {
+      if (data && (data as any).teachPlanTreeNodes) {
+        const nodes = ((data as any).teachPlanTreeNodes as any[]) || []
+        data.teachPlanTreeNodes = nodes.map((v: any) => {
           // this.$set(v, 'edit', false) // https://vuejs.org/v2/guide/reactivity.html
           v.ctlEditTitle = false
           v.ctlBarShow = false
@@ -297,7 +298,7 @@ export default class extends mixins(MixinTools) {
 
   // 添加章
   private async handleAddChapter() {
-    let node: ICourseOutlineTreeNode = {
+    let node: any = {
       courseId: this.courseBaseId,
       parentid: 0,
       grade: 1,
@@ -317,7 +318,7 @@ export default class extends mixins(MixinTools) {
     teachPlanTreeNodes: ICourseOutlineTreeNode[],
     parentid: number
   ) {
-    let node: ICourseOutlineTreeNode = {
+    let node: any = {
       courseId: this.courseBaseId,
       parentid: parentid,
       grade: 2,
@@ -451,7 +452,7 @@ export default class extends mixins(MixinTools) {
       await this.showDeleteConfirm()
       await mediaUnAssociation(
         node.teachplanMedia.teachplanId,
-        node.teachplanMedia.mediaId,
+        String(node.teachplanMedia.mediaId),
         this.courseBaseId
       )
       this.getList()

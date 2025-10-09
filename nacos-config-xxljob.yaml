@@ -1,0 +1,116 @@
+# XXL-JOB 配置（添加到 media-service-dev.yaml）
+
+# ========================================
+# XXL-JOB 分布式任务调度配置
+# ========================================
+xxl:
+  job:
+    # 调度中心地址（多个用逗号分隔）
+    admin:
+      addresses: http://127.0.0.1:8888/xxl-job-admin
+    
+    # 执行器配置
+    executor:
+      # 执行器AppName（需要在调度中心注册）
+      appname: media-service-executor
+      
+      # 执行器通讯端口（调度中心通过此端口下发任务）
+      # 注意：同一台机器上的不同服务，端口不能重复
+      port: 9999
+      
+      # 执行器日志路径
+      # Windows: D:/project/java/xuecheng-plus-project/logs/xxl-job
+      # Linux: /var/log/xuecheng/xxl-job
+      logpath: D:/project/java/xuecheng-plus-project/logs/xxl-job
+      
+      # 日志保留天数（超过自动清理）
+      logretentiondays: 30
+
+# ========================================
+# 配置说明
+# ========================================
+
+# 1. 调度中心地址 (admin.addresses)
+#    - 本地开发：http://127.0.0.1:8888/xxl-job-admin
+#    - 生产环境：http://xxl-job-admin.company.com/xxl-job-admin
+#    - 多个地址用逗号分隔：http://ip1:port1,http://ip2:port2
+
+# 2. 执行器名称 (executor.appname)
+#    - 必须与调度中心注册的执行器名称一致
+#    - 建议命名规范：{服务名}-executor
+#    - 示例：media-service-executor, order-service-executor
+
+# 3. 执行器端口 (executor.port)
+#    - 默认：9999
+#    - 如果部署多个服务，需要避免端口冲突
+#    - 示例分配：
+#      * media-service: 9999
+#      * order-service: 9998
+#      * course-service: 9997
+
+# 4. 日志路径 (executor.logpath)
+#    - 确保应用有写权限
+#    - 建议使用统一的日志目录
+#    - 定期清理，避免磁盘占满
+
+# ========================================
+# 不同环境的配置示例
+# ========================================
+
+# 开发环境 (dev)
+# xxl:
+#   job:
+#     admin:
+#       addresses: http://127.0.0.1:8888/xxl-job-admin
+#     executor:
+#       port: 9999
+
+# 测试环境 (test)
+# xxl:
+#   job:
+#     admin:
+#       addresses: http://192.168.1.100:8888/xxl-job-admin
+#     executor:
+#       port: 9999
+
+# 生产环境 (prod)
+# xxl:
+#   job:
+#     admin:
+#       addresses: http://xxl-job-admin-1:8888,http://xxl-job-admin-2:8888
+#     executor:
+#       port: 9999
+
+# ========================================
+# 集成步骤
+# ========================================
+
+# 步骤1：在Nacos中添加配置
+#   1. 登录Nacos控制台
+#   2. 找到 media-service-dev.yaml 配置文件
+#   3. 将上述配置添加到文件末尾
+#   4. 点击"发布"
+
+# 步骤2：在调度中心注册执行器
+#   1. 登录XXL-JOB调度中心：http://localhost:8888/xxl-job-admin
+#   2. 点击：执行器管理 → 新增
+#   3. 填写：
+#      - AppName: media-service-executor
+#      - 名称: 媒资服务执行器
+#      - 注册方式: 自动注册
+#   4. 点击：保存
+
+# 步骤3：启动媒资服务
+#   - 启动 MediaApplication
+#   - 查看日志确认执行器注册成功
+#   - 在调度中心查看在线机器列表
+
+# 步骤4：创建任务
+#   1. 点击：任务管理 → 新增
+#   2. 填写：
+#      - 执行器: media-service-executor
+#      - 任务描述: 测试任务
+#      - Cron: 0/10 * * * * ?
+#      - JobHandler: testJob
+#   3. 点击：保存并启动
+

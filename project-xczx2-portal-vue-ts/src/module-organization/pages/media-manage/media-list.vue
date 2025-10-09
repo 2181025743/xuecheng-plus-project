@@ -37,6 +37,8 @@
         border
         style="width: 100%"
         :header-cell-style="{ textAlign: 'center' }"
+        :default-sort="{ prop: 'createDate', order: 'descending' }"
+        @sort-change="handleSortChange"
       >
         <el-table-column label="文件名称" width="400" align="center">
           <template slot-scope="scope">
@@ -53,7 +55,7 @@
         </el-table-column>
         <el-table-column prop="tags" label="标签" align="center"></el-table-column>
 
-        <el-table-column label="上传时间" align="center">
+        <el-table-column label="上传时间" prop="createDate" sortable="custom" align="center">
           <template slot-scope="scope">
             {{ scope.row.username }}
             <br />
@@ -75,7 +77,7 @@
 
         <el-table-column label="操作" align="center">
           <template slot-scope="scope">
-            <el-button type="text" size="mini"  :disabled="scope.row.url == undefined" @click="handleDownloadMedia(scope.row.id)">预览</el-button>
+            <el-button type="text" size="mini"  :disabled="!scope.row.fileId && !scope.row.url" @click="handlePreview(scope.row)">预览</el-button>
           
             <el-button
               type="text"
@@ -100,6 +102,15 @@
 
     <!-- 上传资料对话框 -->
     <media-add-dialog :dialogVisible.sync="dialogVisible" @closeDialog="getMediaPageList"></media-add-dialog>
+
+  <!-- 预览遮罩层 -->
+  <div v-if="previewVisible" class="xc-preview-mask" @click="previewVisible=false">
+    <div class="xc-preview-box" @click.stop>
+      <img v-if="previewType==='image'" :src="previewUrl" class="xc-preview-img" />
+      <video v-else-if="previewType==='video'" :src="previewUrl" class="xc-preview-video" controls autoplay></video>
+      <div v-else class="xc-preview-unknown">暂不支持的预览类型</div>
+    </div>
+  </div>
   </div>
 </template>
 
@@ -135,12 +146,21 @@ export default class MediaList extends Vue {
   // 请求参数body
   private listQueryData = {
     filename: '',
-    fileType: ''
+    fileType: '',
+    sortBy: 'createDate',
+    sortOrder: 'desc'
   }
   // 媒资列表
   private listResult: IMediaPageList = {}
   // 上传资料对话框
   private dialogVisible: boolean = false
+  // 排序
+  private sortProp: string = 'createDate'
+  private sortOrder: 'ascending' | 'descending' | null = null
+  // 预览
+  private previewVisible: boolean = false
+  private previewUrl: string = ''
+  private previewType: 'image' | 'video' | 'file' = 'file'
 
   // 计算属性
   getMediaAuditStatus(auditStatus: string) {
@@ -186,19 +206,33 @@ export default class MediaList extends Vue {
   /**
    * 下载媒资
    */
-private async handleDownloadMedia(id: number) {
-    let res= await previewMedia(id);
-    if(res&&res.code==0){
-      window.open(`${process.env.VUE_APP_SERVER_PICSERVER_URL}` +res.result);
-    }else{
+  private async handleDownloadMedia(id: string) {
+    const playUrl = await previewMedia(id)
+    if (!playUrl) {
       this.$message({
-      type: 'error',
-      message: res.errMessage
-     })
+        type: 'error',
+        message: '资源未生成预览地址，请稍后重试或联系管理员'
+      })
+      return
     }
-      
-      return;
+    window.open(`${process.env.VUE_APP_SERVER_PICSERVER_URL}` + playUrl)
+  }
+
+  // 预览（图片/视频在当前页遮罩展示）
+  private async handlePreview(row: any) {
+    const id = row.fileId || row.id
+    const url = await previewMedia(String(id))
+    if (!url) {
+      this.$message({ type: 'error', message: '资源未生成预览地址，请稍后重试或联系管理员' })
+      return
     }
+    const full = `${process.env.VUE_APP_SERVER_PICSERVER_URL}` + url
+    const isImage = (row.fileType === '001001') || /\.(png|jpg|jpeg|gif|webp)$/i.test(full)
+    const isVideo = (row.fileType === '001002') || /\.(mp4|mov|m4v|webm|ogg)$/i.test(full)
+    this.previewUrl = full
+    this.previewType = isImage ? 'image' : (isVideo ? 'video' : 'file')
+    this.previewVisible = true
+  }
     
   // private async handleDownloadMedia(id: number) {
   //   let playUrl= await previewMedia(id);
@@ -247,6 +281,26 @@ private async handleDownloadMedia(id: number) {
     this.getMediaPageList()
   }
 
+  // 处理表格排序变更
+  private handleSortChange({ prop, order }) {
+    this.sortProp = prop
+    this.sortOrder = order
+    // 将三态映射到后端
+    if (order === 'descending') {
+      this.listQueryData.sortBy = prop
+      this.listQueryData.sortOrder = 'desc'
+    } else if (order === 'ascending') {
+      this.listQueryData.sortBy = prop
+      this.listQueryData.sortOrder = 'asc'
+    } else {
+      // 取消排序：恢复默认（后端默认按createDate desc）
+      delete (this.listQueryData as any).sortBy
+      delete (this.listQueryData as any).sortOrder
+    }
+    this.listQuery.pageNo = 1
+    this.getMediaPageList()
+  }
+
   // 翻页 pageSize
   @Watch('listQuery.pageSize', { immediate: true })
   private watchListQueryPageSize(newVal: number) {
@@ -282,5 +336,32 @@ private async handleDownloadMedia(id: number) {
     text-align: center;
     width: 100%;
   }
+}
+
+/* 预览遮罩层样式 */
+.xc-preview-mask {
+  position: fixed;
+  left: 0; top: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.65);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+.xc-preview-box {
+  max-width: 80vw;
+  max-height: 80vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.xc-preview-img, .xc-preview-video {
+  max-width: 80vw;
+  max-height: 80vh;
+  object-fit: contain;
+  background: #000;
+}
+.xc-preview-unknown {
+  color: #fff;
 }
 </style>

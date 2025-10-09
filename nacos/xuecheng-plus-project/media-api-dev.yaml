@@ -1,0 +1,14 @@
+server:
+  servlet:
+    context-path: /media
+  port: 63050
+
+# Spring Web上传文件配置
+spring:
+  servlet:
+    multipart:
+      # 单个文件最大大小（50MB）
+      max-file-size: 50MB
+      # 整个请求最大大小（50MB）
+      max-request-size: 50MB
+

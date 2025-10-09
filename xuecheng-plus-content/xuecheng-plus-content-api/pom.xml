@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="http://maven.apache.org/POM/4.0.0"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.xuecheng</groupId>
+        <artifactId>xuecheng-plus-content</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+    </parent>
+    <artifactId>xuecheng-plus-content-api</artifactId>
+
+    <dependencies>
+        <!-- ========== 核心依赖 ========== -->
+
+        <!-- 业务层依赖（会传递依赖model和base） -->
+        <dependency>
+            <groupId>com.xuecheng</groupId>
+            <artifactId>xuecheng-plus-content-service</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
+        <!-- ========== Spring Boot相关 ========== -->
+
+        <!-- Spring Cloud基础环境包 -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-context</artifactId>
+        </dependency>
+
+        <!-- ========== Nacos服务注册与发现 ========== -->
+        <!-- 
+            说明：将微服务注册到Nacos服务注册中心
+            1. 自动将服务信息上报到Nacos
+            2. 支持服务健康检查
+            3. 支持命名空间（区分环境）和分组（区分项目）
+        -->
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+        </dependency>
+
+        <!-- ========== Nacos配置中心 ========== -->
+        <!-- 
+            说明：从Nacos配置中心拉取配置信息
+            
+            核心作用：
+            1. 统一管理所有微服务的配置（集中化）
+            2. 支持配置热更新（不重启服务即可生效）
+            3. 解决配置分散问题（20台服务器只需在Nacos改1次）
+            
+            使用场景举例：
+            - 场景：10个微服务 × 2个实例 = 20台服务器
+            - 问题：数据库地址变更
+            - 传统方式：修改20个配置文件 + 重启20个服务 ❌
+            - 使用Nacos：在Nacos修改1次，所有服务自动生效 ✅
+            
+            配置文件命名规则（Data ID）：
+            ${spring.application.name}-${spring.profiles.active}.${file-extension}
+            例如：content-api-dev.yaml
+                  ↑           ↑        ↑
+               服务名       环境     扩展名
+        -->
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
+        </dependency>
+
+        <!-- Spring Boot Web MVC -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <!-- 参数校验 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+
+        <!-- 排除默认日志，使用log4j2 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-logging</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <!-- Spring Boot 集成 log4j2 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-log4j2</artifactId>
+        </dependency>
+
+        <!-- ========== 接口文档 ========== -->
+
+        <!-- Knife4j（Swagger增强版） -->
+        <dependency>
+            <groupId>com.github.xiaoymin</groupId>
+            <artifactId>knife4j-spring-boot-starter</artifactId>
+            <version>3.0.3</version>
+        </dependency>
+
+        <!-- ========== 数据库相关（仅运行时需要） ========== -->
+
+        <!-- MyBatis Plus 启动器 -->
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-boot-starter</artifactId>
+        </dependency>
+
+        <!-- MyBatis 核心包（确保运行时可用） -->
+        <dependency>
+            <groupId>org.mybatis</groupId>
+            <artifactId>mybatis</artifactId>
+            <version>3.5.7</version>
+        </dependency>
+
+        <!-- ========== 以下依赖已删除（通过service传递获得） ========== -->
+        <!--
+        <dependency>
+            <groupId>com.xuecheng</groupId>
+            <artifactId>xuecheng-plus-content-model</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.xuecheng</groupId>
+            <artifactId>xuecheng-plus-base</artifactId>
+        </dependency>
+        说明：
+        - content-api依赖content-service
+        - content-service依赖content-model和base
+        - 通过Maven传递依赖，api自动获得model和base
+        - 删除冗余依赖，简化配置
+        -->
+
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>2.3.7.RELEASE</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>

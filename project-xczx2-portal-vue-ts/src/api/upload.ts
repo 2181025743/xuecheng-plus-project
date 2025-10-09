@@ -4,7 +4,7 @@ import { createFormAPI, uploadVideo } from '@/utils/request'
 // fileMd5=c5c75d70f382e6016d2f506d134eee11&fileName=1.avi&fileSize=51&mimetype=video/x-msvideo&fileExt=avi
 
 export async function upRegister(params: any) {
-    const { data } = await createFormAPI('/media/upload/checkfile', 'post', params, 'application/x-www-form-urlencoded;')
+    const { data } = await createFormAPI('/media/upload/checkfile', 'post', params)
     return data
   }
 
@@ -12,7 +12,7 @@ export async function upRegister(params: any) {
 // fileMd5=c5c75d70f382e6016d2f506d134eee11&chunk=0&chunkSize=51
 
 export async function checkchunk(params: any) {
-    const { data } = await createFormAPI('/media/upload/checkchunk', 'post', params, 'application/x-www-form-urlencoded;')
+    const { data } = await createFormAPI('/media/upload/checkchunk', 'post', params)
     return data
 }  
 
@@ -28,6 +28,6 @@ export async function upChunk(params: any) {
 // fileMd5=dcb37b85c9c03fc5243e20ab4dfbc1c8&fileName=8.avi&chunkSum=1&mimetype=video/x-msvideo&fileExt=avi
 
 export async function mergeChunks(params: any) {
-    const { data } = await createFormAPI('/media/upload/mergechunks', 'post', params, 'application/x-www-form-urlencoded;')
+    const { data } = await createFormAPI('/media/upload/mergechunks', 'post', params)
     return data
 }   

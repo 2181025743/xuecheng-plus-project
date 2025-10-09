@@ -1,0 +1,52 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://114.132.63.109:3306/xuecheng?serverTimezone=UTC&userUnicode=true&useSSL=false&characterEncoding=utf-8
+    username: root
+    password: Hm#2024@MySQL
+  cloud:
+    config:
+      override-none: true
+
+# MinIO配置
+minio:
+  endpoint: http://114.132.63.109:9000
+  accessKey: minioadmin
+  secretKey: minioadmin
+  bucket:
+    files: mediafiles
+    videofiles: video
+
+# XXL-JOB配置
+xxl:
+  job:
+    admin:
+      addresses: http://114.132.63.109:8088/xxl-job-admin
+    executor:
+      appname: media-process-service
+      address: 
+      ip: 
+      port: 9999
+      logpath: /data/applogs/xxl-job/jobhandler
+      logretentiondays: 30
+      accessToken: default_token
+
+# 视频处理配置
+videoprocess:
+  ffmpegpath: D:/soft/ffmpeg/ffmpeg.exe
+
+# 阿里云OSS配置
+aliyun:
+  oss:
+    endpoint: oss-cn-beijing.aliyuncs.com
+    accessKeyId: YOUR_ACCESS_KEY_ID_HERE
+    accessKeySecret: YOUR_ACCESS_KEY_SECRET_HERE
+    bucketName: YOUR_BUCKET_NAME_HERE
+
+# MyBatis Plus配置
+mybatis-plus:
+  mapper-locations: classpath*:/mapper/**/*.xml
+  type-aliases-package: com.xuecheng.media.model.po
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl

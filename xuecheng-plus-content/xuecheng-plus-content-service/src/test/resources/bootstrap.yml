@@ -1,0 +1,27 @@
+#微服务配置
+spring:
+  application:
+    name: content-service
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://101.42.238.233:3306/xuecheng?serverTimezone=UTC&userUnicode=true&useSSL=false&
+    username: root
+    password: Hm#2024@MySQL
+
+# MyBatis Plus 配置
+mybatis-plus:
+  mapper-locations: classpath*:/mapper/**/*.xml
+  type-aliases-package: com.xuecheng.content.model.po
+  configuration:
+    map-underscore-to-camel-case: true
+    # 打印SQL语句（测试环境）
+    log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
+
+# 日志配置
+logging:
+  config: classpath:log4j2-dev.xml
+  level:
+    # 项目日志级别
+    com.xuecheng: DEBUG
+    # SQL日志
+    com.xuecheng.content.mapper: DEBUG

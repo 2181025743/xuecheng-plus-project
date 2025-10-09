@@ -1,6 +1,6 @@
 import { upRegister, checkchunk, upChunk, mergeChunks } from '@/api/upload'
 import CryptoJS from 'crypto-js'
-export const uploadByPieces = ({ file, pieceSize = 5, success, error }:any) => {
+export const uploadByPieces = ({ file, pieceSize = 5, success, error }:any) => {  // pieceSize默认5MB（MinIO要求最小5MB）
     // 上传过程中用到的变量
     let fileMD5 = ""; // md5加密文件的标识
     const chunkSize = pieceSize * 1024 * 1024; // 分片大小
@@ -77,13 +77,23 @@ export const uploadByPieces = ({ file, pieceSize = 5, success, error }:any) => {
         mergeChunks({
           fileMd5:fileMD5,
           fileName:file.name,
-          chunkTotal:chunkCount
+          chunkTotal:chunkCount,
+          fileSize:file.size  // 添加文件大小参数
           // mimetype:file.raw.type,
           // fileExt:file.name.split('.').at(-1) 
         }).then(res => {
-            // 合并成功了
-            success({num, chunkCount, state:'success'})
+            // 检查后端返回的实际结果
+            if (res && res.code === 0) {
+              // 合并成功了
+              success({num, chunkCount, state:'success'})
+            } else {
+              // 合并失败，显示错误信息
+              const errMsg = (res && res.msg) || '文件合并失败'
+              console.error('合并失败：', errMsg, res)
+              error(errMsg)
+            }
           }).catch(err => {
+              console.error('合并请求异常：', err)
               error(err)
           })
       }

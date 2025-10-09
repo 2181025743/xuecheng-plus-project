@@ -1,41 +1,37 @@
-# Node.js依赖（永远不要提交！）
-node_modules/
-package-lock.json
-
-# 编译输出
-target/
-*.class
-*.jar
-*.war
-*.ear
-
-# IDE配置
+# IDE
 .idea/
-*.iml
 .vscode/
-*.swp
-*.swo
-*~
+.cursor/
+*.iml
+*.ipr
+*.iws
 
-# 日志文件
+# Logs
 logs/
 *.log
 
-# 临时文件
+# Node
+node_modules/
+package-lock.json
+yarn-error.log
+
+# Build
+target/
+build/
+dist/
+
+# Java
+*.class
+*.jar
+*.war
+
+# Temp files
 *.tmp
-*.temp
+*.bak
+user.txt
+mysql.txt
+
+# OS
 .DS_Store
 Thumbs.db
-
-# 敏感配置文件（包含密钥、密码等）
-nacos/
-user.txt
-application-dev.yml
-application-dev.yaml
-*-dev.yml
-*-dev.yaml
-
-# 本地环境配置
-.env
-.env.local
 

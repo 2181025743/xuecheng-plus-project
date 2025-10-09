@@ -96,10 +96,10 @@ export default class extends mixins(MixinTools) {
   }
 
   // 删除
-  private async handleDelete(data: ICourseTeacherList) {
+  private async handleDelete(data: ICourseTeacherList | any) {
     try {
       await this.showDeleteConfirm()
-      await deleteTeacher(this.courseBaseId, data.id)
+      await deleteTeacher(this.courseBaseId, data.id || data.courseTeacherId)
       await this.getList()
     } catch (error) {}
   }

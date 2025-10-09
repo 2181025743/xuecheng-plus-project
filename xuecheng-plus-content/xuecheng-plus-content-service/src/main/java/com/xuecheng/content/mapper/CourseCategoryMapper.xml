@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xuecheng.content.mapper.CourseCategoryMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.xuecheng.content.model.po.CourseCategory">
+        <id column="id" property="id" />
+        <result column="name" property="name" />
+        <result column="label" property="label" />
+        <result column="parentid" property="parentid" />
+        <result column="is_show" property="isShow" />
+        <result column="orderby" property="orderby" />
+        <result column="is_leaf" property="isLeaf" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, name, label, parentid, is_show, orderby, is_leaf
+    </sql>
+
+    <!-- 
+        课程分类树形结构递归查询
+        使用MySQL 8.0的递归CTE（Common Table Expression）语法
+        从指定的根节点开始，递归查询所有子节点
+     -->
+    <select id="selectTreeNodes" 
+            resultType="com.xuecheng.content.model.dto.CourseCategoryTreeDto"
+            parameterType="string">
+        WITH RECURSIVE t1 AS (
+            -- 递归的初始部分：查询根节点
+            SELECT * FROM course_category WHERE id = #{id}
+            
+            UNION ALL
+            
+            -- 递归部分：查询当前节点的所有子节点
+            -- t1中的每条记录，都会去查找它的子节点
+            SELECT c.* 
+            FROM course_category c
+            INNER JOIN t1 ON t1.id = c.parentid
+        )
+        -- 查询递归结果，并按ID和排序字段排序
+        SELECT * FROM t1 ORDER BY t1.id, t1.orderby
+    </select>
+
+</mapper>

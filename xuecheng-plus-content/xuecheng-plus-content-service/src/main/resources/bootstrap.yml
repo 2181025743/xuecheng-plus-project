@@ -1,0 +1,71 @@
+# ========================================================================
+# Service层 bootstrap.yml
+# ========================================================================
+#
+# 设计理念：
+# 1. Service层是业务逻辑层，不对外提供HTTP服务
+# 2. Service层被API层依赖，API层通过extension-configs引用这个配置
+# 3. Service层只负责配置数据库、MyBatis等业务相关配置
+#
+# 为什么Service层需要配置Nacos？
+# - Service层需要数据库配置
+# - API层会引用Service层的配置（避免重复配置）
+# - 单元测试时需要从Nacos拉取配置
+#
+# ========================================================================
+
+spring:
+  application:
+    # ⚠️ 必须保留：Service层的服务名
+    # 作用：用于在Nacos中定位配置文件
+    # 配置文件名：content-service-dev.yaml
+    name: content-service
+  
+  # ⚠️ 必须保留：环境标识
+  # 参与组成配置文件名：content-service-dev.yaml
+  profiles:
+    active: dev
+  
+  # ========== Nacos配置 ==========
+  cloud:
+    nacos:
+      # ⚠️ 必须保留：Nacos服务器地址
+      server-addr: 111.228.43.9:8848
+      username: nacos
+      password: A1472580369Z
+      # ========== 配置中心配置 ==========
+      # 说明:Service层只需要config,不需要discovery
+      # 原因:
+      # 1. Service层不是独立的微服务,不需要注册到Nacos服务注册中心
+      # 2. Service层只是业务逻辑层,被API层依赖
+      # 3. Service层只需要从Nacos配置中心拉取数据库等配置信息
+      # 4. 只有API层(对外提供HTTP服务的层)才需要discovery服务注册
+      config:
+        # 命名空间（与API层保持一致）
+        namespace: dev-xuecheng
+        # 分组名称（与API层保持一致）
+        group: xuecheng-plus-project
+        # 配置文件扩展名
+        file-extension: yaml
+        # 是否启用配置中心
+        enabled: true
+        # 配置刷新开关
+        refresh-enabled: true
+
+# ========================================================================
+# 以下配置已迁移到Nacos配置中心
+# ========================================================================
+# 配置文件位置：Nacos控制台 → 配置管理 → 配置列表 → dev-xuecheng命名空间
+# Data ID: content-service-dev.yaml
+# Group: xuecheng-plus-project
+#
+# 已迁移的配置包括：
+# 1. spring.datasource配置（数据库连接信息）
+# 2. mybatis-plus配置（Mapper路径、类型别名、日志等）
+# 3. spring.output配置（ANSI彩色日志）
+#
+# ⚠️ 首次启动前必须操作：
+# 在Nacos控制台创建配置文件：content-service-dev.yaml
+# 配置内容详见项目根目录的：nacos-config-content-service-dev.yaml
+# ========================================================================
+

@@ -92,9 +92,19 @@ export default class MediaAddDialog extends Vue {
       success: (data) => {
         file.percentage = (data.num/data.chunkCount) * 100
         console.log('success::' + data)
+        // 合并完成，显示成功提示并刷新列表
+        if (data.state === 'success') {
+          this.$message.success('文件上传成功！')
+          // 延迟500ms关闭对话框并刷新列表
+          setTimeout(() => {
+            this.syncDialogVisible = false
+            this.handleClosedDialog()
+          }, 500)
+        }
       },
       error: (e) => {
         console.log(file, fileList)
+        this.$message.error('视频分片上传失败：' + (e.message || e))
         // 出错了可以从列表中删除吧
         // fileList.forEach((n,i) => { if(n.uid == file.uid){
         //   fileList.splice(i,1)
@@ -320,6 +330,8 @@ export default class MediaAddDialog extends Vue {
    * 关闭对话框后刷新列表
    */
   private handleClosedDialog() {
+    // 清空文件列表，准备下次上传
+    this.fileList = []
     this.$emit('closeDialog')
   }
 }

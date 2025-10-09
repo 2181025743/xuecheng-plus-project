@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration monitorInterval="180" packages="">
+    <properties>
+        <!-- 日志目录：项目根目录的logs文件夹 -->
+        <property name="logdir">D:/project/java/xuecheng-plus-project/logs</property>
+        <!-- 服务名称（用于区分不同服务的日志） -->
+        <property name="serviceName">media-service</property>
+        <!-- 文件日志格式：详细信息 -->
+        <property name="FILE_PATTERN">%date{YYYY-MM-dd HH:mm:ss,SSS} %level [%thread][%file:%line] -
+            %msg%n%throwable</property>
+        <!-- 控制台日志格式：简洁清晰（Spring Boot风格，带颜色） -->
+        <property name="CONSOLE_PATTERN">%d{yyyy-MM-dd HH:mm:ss.SSS}
+            %highlight{%-5level}{ERROR=Bright Red, WARN=Bright Yellow, INFO=Bright Green,
+            DEBUG=Bright Cyan} %style{[%t]}{Bright Blue} %style{%-40.40c{1.}}{Cyan} :
+            %msg%n%throwable</property>
+    </properties>
+
+    <Appenders>
+        <!-- 控制台输出 -->
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="${CONSOLE_PATTERN}" />
+        </Console>
+
+        <!-- 错误日志文件 -->
+        <RollingFile name="ErrorAppender"
+            fileName="${logdir}/${serviceName}-error.log"
+            filePattern="${logdir}/$${date:yyyy-MM-dd}/${serviceName}-error.%d{yyyy-MM-dd-HH}.log"
+            append="true">
+            <PatternLayout pattern="${FILE_PATTERN}" />
+            <ThresholdFilter level="ERROR" onMatch="ACCEPT" onMismatch="DENY" />
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true" />
+                <SizeBasedTriggeringPolicy size="100MB" />
+            </Policies>
+            <DefaultRolloverStrategy max="30" />
+        </RollingFile>
+
+        <!-- 所有日志文件 -->
+        <RollingFile name="InfoAppender"
+            fileName="${logdir}/${serviceName}.log"
+            filePattern="${logdir}/$${date:yyyy-MM-dd}/${serviceName}.%d{yyyy-MM-dd-HH}.log"
+            append="true">
+            <PatternLayout pattern="${FILE_PATTERN}" />
+            <ThresholdFilter level="DEBUG" onMatch="ACCEPT" onMismatch="DENY" />
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true" />
+                <SizeBasedTriggeringPolicy size="100MB" />
+            </Policies>
+            <DefaultRolloverStrategy max="30" />
+        </RollingFile>
+
+        <!-- 异步appender（提升性能） -->
+        <Async name="AsyncAppender" includeLocation="true">
+            <AppenderRef ref="ErrorAppender" />
+            <AppenderRef ref="InfoAppender" />
+        </Async>
+    </Appenders>
+
+    <Loggers>
+        <!-- ========== 第三方框架日志级别（减少噪音） ========== -->
+        <logger name="org.springframework" level="WARN" />
+        <logger name="org.mybatis" level="WARN" />
+        <logger name="com.alibaba.druid" level="WARN" />
+        <logger name="com.zaxxer.hikari" level="WARN" />
+        <logger name="springfox" level="WARN" />
+        <logger name="org.apache.http" level="WARN" />
+        <logger name="com.netflix.discovery" level="WARN" />
+        <logger name="com.alibaba.nacos" level="WARN" />
+        <logger name="RocketmqCommon" level="WARN" />
+        <logger name="RocketmqRemoting" level="WARN" />
+        <logger name="RocketmqClient" level="WARN" />
+        <logger name="org.dromara.hmily" level="WARN" />
+
+        <!-- ========== 项目日志（详细显示） ========== -->
+        <logger name="com.xuecheng" level="DEBUG" />
+        <logger name="com.xuecheng.media.mapper" level="DEBUG" />
+
+        <!-- 根日志 -->
+        <Root level="INFO" includeLocation="true">
+            <AppenderRef ref="AsyncAppender" />
+            <AppenderRef ref="Console" />
+        </Root>
+    </Loggers>
+</Configuration>

@@ -1,0 +1,11 @@
+server:
+  port: 63040
+  servlet:
+    context-path: /content
+
+# ⚠️ 添加以下配置
+spring:
+  cloud:
+    nacos:
+      config:
+        override-none: false # 本地配置优先

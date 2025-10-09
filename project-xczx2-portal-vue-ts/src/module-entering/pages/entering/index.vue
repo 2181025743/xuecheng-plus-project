@@ -57,7 +57,7 @@
 
 <script lang="ts">
 import { Component, Vue, Watch } from 'vue-property-decorator'
-import { Route } from 'vue-router'
+// import { Route } from 'vue-router'
 import CommonEnteringStep1SignAgreement from './components/common-entering-step1-sign-agreement.vue'
 import CompanyEnteringStep2SubmitInformation from './components/company-entering-step2-submit-information.vue'
 import PersonalEnteringStep2SubmitInformation from './components/personal-entering-step2-submit-information.vue'
@@ -81,7 +81,7 @@ export default class Entering extends Vue {
 
   // https://router.vuejs.org/zh/guide/essentials/dynamic-matching.html#响应路由参数的变化
   @Watch('$route')
-  onRouteChanged(to: Route, from: Route) {
+  onRouteChanged(to: any, from: any) {
     this.init(to)
   }
 
@@ -95,7 +95,7 @@ export default class Entering extends Vue {
   /**
    * 初始化
    */
-  private init(route: Route) {
+  private init(route: any) {
     this.type = route.name === 'company-entering' ? '0' : '1'
     this.stepsActive = 0
     this.signAgreement = false

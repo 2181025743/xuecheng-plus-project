@@ -286,7 +286,7 @@ export default class extends Vue {
           console.log('✅ 课程图片自动保存成功！')
           console.log('✅ 返回结果:', result)
         }
-      } catch (error: any) {
+      } catch (error) {
         console.error('❌ 自动保存课程图片失败:', error)
 
         // 详细的错误信息

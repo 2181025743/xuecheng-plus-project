@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration monitorInterval="180" packages="">
+    <properties>
+        <property name="logdir">logs</property>
+        <!-- 文件日志格式：详细信息 -->
+        <property name="FILE_PATTERN">%date{YYYY-MM-dd HH:mm:ss,SSS} %level [%thread][%file:%line] - %msg%n%throwable</property>
+        <!-- 控制台日志格式：简洁清晰（测试环境专用） -->
+        <property name="CONSOLE_PATTERN">%d{HH:mm:ss.SSS} %highlight{%-5level}{ERROR=red, WARN=yellow, INFO=green, DEBUG=cyan} %style{[%t]}{blue} %style{%c{1.}}{cyan} - %msg%n</property>
+    </properties>
+    
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="${CONSOLE_PATTERN}"/>
+            <!-- 输出DEBUG及以上级别到控制台（显示SQL） -->
+            <ThresholdFilter level="DEBUG" onMatch="ACCEPT" onMismatch="DENY"/>
+        </Console>
+
+        <RollingFile name="ErrorAppender" fileName="${logdir}/error.log"
+            filePattern="${logdir}/$${date:yyyy-MM-dd}/error.%d{yyyy-MM-dd-HH}.log" append="true">
+            <PatternLayout pattern="${FILE_PATTERN}"/>
+            <ThresholdFilter level="ERROR" onMatch="ACCEPT" onMismatch="DENY"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true" />
+            </Policies>
+        </RollingFile>
+
+        <RollingFile name="DebugAppender" fileName="${logdir}/info.log"
+            filePattern="${logdir}/$${date:yyyy-MM-dd}/info.%d{yyyy-MM-dd-HH}.log" append="true">
+            <PatternLayout pattern="${FILE_PATTERN}"/>
+            <ThresholdFilter level="DEBUG" onMatch="ACCEPT" onMismatch="DENY"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true" />
+            </Policies>
+        </RollingFile>
+        
+        <!--异步appender-->
+        <Async name="AsyncAppender" includeLocation="true">
+            <AppenderRef ref="ErrorAppender"/>
+            <AppenderRef ref="DebugAppender"/>
+        </Async>
+    </Appenders>
+    
+    <Loggers>
+        <!-- ========== 单元测试环境日志配置（极简模式） ========== -->
+        
+        <!-- Spring框架 - 只显示错误 -->
+        <logger name="org.springframework" level="ERROR"/>
+        <logger name="org.springframework.boot" level="WARN"/>
+        <logger name="org.springframework.test" level="WARN"/>
+        <logger name="org.springframework.web" level="WARN"/>
+        
+        <!-- MyBatis Plus - 只显示SQL -->
+        <logger name="org.mybatis" level="WARN"/>
+        <logger name="com.baomidou.mybatisplus" level="WARN"/>
+        
+        <!-- 数据库连接池 - 只显示警告 -->
+        <logger name="com.alibaba.druid" level="WARN"/>
+        <logger name="com.zaxxer.hikari" level="WARN"/>
+        
+        <!-- Swagger - 测试环境不需要 -->
+        <logger name="springfox" level="ERROR"/>
+        <logger name="io.swagger" level="ERROR"/>
+        
+        <!-- HTTP相关 -->
+        <logger name="org.apache.http" level="WARN"/>
+        <logger name="org.apache.tomcat" level="WARN"/>
+        <logger name="org.apache.catalina" level="WARN"/>
+        
+        <!-- Spring Cloud -->
+        <logger name="com.netflix.discovery" level="ERROR"/>
+        <logger name="org.springframework.cloud" level="WARN"/>
+        
+        <!-- 消息队列 -->
+        <logger name="RocketmqCommon" level="WARN"/>
+        <logger name="RocketmqRemoting" level="WARN"/>
+        <logger name="RocketmqClient" level="WARN"/>
+        
+        <!-- 其他组件 -->
+        <logger name="org.dromara.hmily" level="WARN"/>
+        
+        <!-- ========== 项目日志（测试时关注的重点） ========== -->
+        
+        <!-- 显示SQL语句（重点！） -->
+        <logger name="com.xuecheng.content.mapper" level="DEBUG">
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="DebugAppender"/>
+        </logger>
+        
+        <!-- 项目业务日志 -->
+        <logger name="com.xuecheng" level="INFO"/>
+        
+        <!-- 测试类日志 -->
+        <logger name="com.xuecheng.content.CourseBaseMapperTest" level="DEBUG"/>
+        
+        <!-- ========== 根日志配置 ========== -->
+        <!--
+        测试环境日志级别说明：
+        - 控制台：只显示INFO及以上（减少噪音）
+        - 文件：保存所有DEBUG日志（便于排查）
+        -->
+        <Root level="INFO" includeLocation="false">
+            <AppenderRef ref="AsyncAppender"/>
+            <AppenderRef ref="Console"/>
+        </Root>
+    </Loggers>
+</Configuration>
